@@ -1,0 +1,35 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  tls:
+    enabled: false
+
+logging:
+  level: "info"
+
+metrics:
+  enabled: true
+  port: 9090
+
+networkFunction:
+  type: "SMF"
+  instanceID: "smf-001"
+  instanceName: "SMF Session Manager"
+  capacity: 100
+  priority: 1
+  locality: "local"
+
+nrf:
+  url: "http://nrf:8080"
+  registrationRetry: 5
+  heartbeatInterval: 30
+
+smf:
+  upfSelectionMode: "proximity"  # Options: proximity, load, performance
+  dnnList: ["internet", "ims", "emergency"]
+  ipv4AddressPool:
+    start: "10.0.0.1"
+    end: "10.0.255.254"
+  ipv6AddressPool:
+    prefix: "2001:db8::"
+    prefixLength: 64

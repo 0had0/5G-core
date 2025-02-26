@@ -1,0 +1,26 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  tls:
+    enabled: false
+
+logging:
+  level: "info"
+
+metrics:
+  enabled: true
+  port: 9090
+
+networkFunction:
+  type: "NRF"
+  instanceID: "nrf-001"
+  instanceName: "NRF Central Registry"
+  capacity: 100
+  priority: 1
+  locality: "local"
+
+database:
+  type: "memory"  # Options: memory, mongodb, redis
+  host: "localhost"
+  port: 27017
+  name: "nrf-db"

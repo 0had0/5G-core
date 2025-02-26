@@ -1,0 +1,311 @@
+version: '3.8'
+
+services:
+  # Network Repository Function (NRF)
+  nrf:
+    build:
+      context: .
+      dockerfile: build/nrf/Dockerfile
+    image: 5g-core/nrf:latest
+    container_name: 5gc-nrf
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    environment:
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - LOGGING_LEVEL=info
+      - METRICS_ENABLED=true
+      - METRICS_PORT=9090
+      - NETWORKFUNCTION_TYPE=NRF
+      - NETWORKFUNCTION_INSTANCEID=nrf-001
+    volumes:
+      - ./configs/nrf:/app/configs
+    networks:
+      - 5g-core-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Access and Mobility Management Function (AMF)
+  amf:
+    build:
+      context: .
+      dockerfile: build/amf/Dockerfile
+    image: 5g-core/amf:latest
+    container_name: 5gc-amf
+    ports:
+      - "8081:8080"
+      - "9091:9090"
+    environment:
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - LOGGING_LEVEL=info
+      - METRICS_ENABLED=true
+      - METRICS_PORT=9090
+      - NETWORKFUNCTION_TYPE=AMF
+      - NETWORKFUNCTION_INSTANCEID=amf-001
+      - NRF_URL=http://nrf:8080
+    volumes:
+      - ./configs/amf:/app/configs
+    networks:
+      - 5g-core-network
+    depends_on:
+      nrf:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Session Management Function (SMF)
+  smf:
+    build:
+      context: .
+      dockerfile: build/smf/Dockerfile
+    image: 5g-core/smf:latest
+    container_name: 5gc-smf
+    ports:
+      - "8082:8080"
+      - "9092:9090"
+    environment:
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - LOGGING_LEVEL=info
+      - METRICS_ENABLED=true
+      - METRICS_PORT=9090
+      - NETWORKFUNCTION_TYPE=SMF
+      - NETWORKFUNCTION_INSTANCEID=smf-001
+      - NRF_URL=http://nrf:8080
+    volumes:
+      - ./configs/smf:/app/configs
+    networks:
+      - 5g-core-network
+    depends_on:
+      nrf:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # User Plane Function (UPF)
+  upf:
+    build:
+      context: .
+      dockerfile: build/upf/Dockerfile
+    image: 5g-core/upf:latest
+    container_name: 5gc-upf
+    ports:
+      - "8083:8080"
+      - "9093:9090"
+    environment:
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - LOGGING_LEVEL=info
+      - METRICS_ENABLED=true
+      - METRICS_PORT=9090
+      - NETWORKFUNCTION_TYPE=UPF
+      - NETWORKFUNCTION_INSTANCEID=upf-001
+      - NRF_URL=http://nrf:8080
+    volumes:
+      - ./configs/upf:/app/configs
+    networks:
+      - 5g-core-network
+    depends_on:
+      nrf:
+        condition: service_healthy
+      smf:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Policy Control Function (PCF)
+  pcf:
+    build:
+      context: .
+      dockerfile: build/pcf/Dockerfile
+    image: 5g-core/pcf:latest
+    container_name: 5gc-pcf
+    ports:
+      - "8084:8080"
+      - "9094:9090"
+    environment:
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - LOGGING_LEVEL=info
+      - METRICS_ENABLED=true
+      - METRICS_PORT=9090
+      - NETWORKFUNCTION_TYPE=PCF
+      - NETWORKFUNCTION_INSTANCEID=pcf-001
+      - NRF_URL=http://nrf:8080
+    volumes:
+      - ./configs/pcf:/app/configs
+    networks:
+      - 5g-core-network
+    depends_on:
+      nrf:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Unified Data Management (UDM)
+  udm:
+    build:
+      context: .
+      dockerfile: build/udm/Dockerfile
+    image: 5g-core/udm:latest
+    container_name: 5gc-udm
+    ports:
+      - "8085:8080"
+      - "9095:9090"
+    environment:
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - LOGGING_LEVEL=info
+      - METRICS_ENABLED=true
+      - METRICS_PORT=9090
+      - NETWORKFUNCTION_TYPE=UDM
+      - NETWORKFUNCTION_INSTANCEID=udm-001
+      - NRF_URL=http://nrf:8080
+    volumes:
+      - ./configs/udm:/app/configs
+    networks:
+      - 5g-core-network
+    depends_on:
+      nrf:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Authentication Server Function (AUSF)
+  ausf:
+    build:
+      context: .
+      dockerfile: build/ausf/Dockerfile
+    image: 5g-core/ausf:latest
+    container_name: 5gc-ausf
+    ports:
+      - "8086:8080"
+      - "9096:9090"
+    environment:
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - LOGGING_LEVEL=info
+      - METRICS_ENABLED=true
+      - METRICS_PORT=9090
+      - NETWORKFUNCTION_TYPE=AUSF
+      - NETWORKFUNCTION_INSTANCEID=ausf-001
+      - NRF_URL=http://nrf:8080
+    volumes:
+      - ./configs/ausf:/app/configs
+    networks:
+      - 5g-core-network
+    depends_on:
+      nrf:
+        condition: service_healthy
+      udm:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Network Slice Selection Function (NSSF)
+  nssf:
+    build:
+      context: .
+      dockerfile: build/nssf/Dockerfile
+    image: 5g-core/nssf:latest
+    container_name: 5gc-nssf
+    ports:
+      - "8087:8080"
+      - "9097:9090"
+    environment:
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - LOGGING_LEVEL=info
+      - METRICS_ENABLED=true
+      - METRICS_PORT=9090
+      - NETWORKFUNCTION_TYPE=NSSF
+      - NETWORKFUNCTION_INSTANCEID=nssf-001
+      - NRF_URL=http://nrf:8080
+    volumes:
+      - ./configs/nssf:/app/configs
+    networks:
+      - 5g-core-network
+    depends_on:
+      nrf:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Prometheus for metrics
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: 5gc-prometheus
+    ports:
+      - "9080:9090"
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - 5g-core-network
+    depends_on:
+      - nrf
+      - amf
+      - smf
+      - upf
+      - pcf
+      - udm
+      - ausf
+      - nssf
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: 5gc-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - 5g-core-network
+    depends_on:
+      - prometheus
+
+networks:
+  5g-core-network:
+    driver: bridge
+
+volumes:
+  prometheus_data:
+  grafana_data:

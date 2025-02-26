@@ -1,0 +1,33 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  tls:
+    enabled: false
+
+logging:
+  level: "info"
+
+metrics:
+  enabled: true
+  port: 9090
+
+networkFunction:
+  type: "AUSF"
+  instanceID: "ausf-001"
+  instanceName: "AUSF Authentication Server"
+  capacity: 100
+  priority: 1
+  locality: "local"
+
+nrf:
+  url: "http://nrf:8080"
+  registrationRetry: 5
+  heartbeatInterval: 30
+
+ausf:
+  supportedAuthMethods:
+    - "5G_AKA"     # 5G Authentication and Key Agreement
+    - "EAP_AKA"    # Extensible Authentication Protocol-Authentication and Key Agreement
+    - "EAP_TLS"    # Extensible Authentication Protocol-Transport Layer Security
+  udmEndpoint: "http://udm:8080"
+  authVectorLifetime: 3600  # seconds

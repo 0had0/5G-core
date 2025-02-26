@@ -1,0 +1,42 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  tls:
+    enabled: false
+
+logging:
+  level: "info"
+
+metrics:
+  enabled: true
+  port: 9090
+
+networkFunction:
+  type: "UDM"
+  instanceID: "udm-001"
+  instanceName: "UDM Data Manager"
+  capacity: 100
+  priority: 1
+  locality: "local"
+
+nrf:
+  url: "http://nrf:8080"
+  registrationRetry: 5
+  heartbeatInterval: 30
+
+database:
+  type: "mongodb"
+  host: "mongodb"
+  port: 27017
+  username: "udmuser"
+  password: "udmpassword"
+  name: "udm-db"
+
+udm:
+  supportedFeatures:
+    - "Nudm_UECM"   # UE Context Management
+    - "Nudm_SDM"    # Subscriber Data Management
+    - "Nudm_UEAuth" # UE Authentication
+  dataRetention:
+    subscriberDataRetention: 90  # days
+    authenticationDataRetention: 60  # days

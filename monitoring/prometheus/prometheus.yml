@@ -1,0 +1,31 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: '5g-core'
+    static_configs:
+      - targets: ['nrf:9090']
+        labels:
+          service: 'nrf'
+      - targets: ['amf:9090']
+        labels:
+          service: 'amf'
+      - targets: ['smf:9090']
+        labels:
+          service: 'smf'
+      - targets: ['upf:9090']
+        labels:
+          service: 'upf'
+      - targets: ['pcf:9090']
+        labels:
+          service: 'pcf'
+      - targets: ['udm:9090']
+        labels:
+          service: 'udm'
+      - targets: ['ausf:9090']
+        labels:
+          service: 'ausf'
+      - targets: ['nssf:9090']
+        labels:
+          service: 'nssf'

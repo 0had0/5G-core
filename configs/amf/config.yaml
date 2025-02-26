@@ -1,0 +1,34 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  tls:
+    enabled: false
+
+logging:
+  level: "info"
+
+metrics:
+  enabled: true
+  port: 9090
+
+networkFunction:
+  type: "AMF"
+  instanceID: "amf-001"
+  instanceName: "AMF Access Manager"
+  capacity: 100
+  priority: 1
+  locality: "local"
+
+nrf:
+  url: "http://nrf:8080"
+  registrationRetry: 5
+  heartbeatInterval: 30
+
+amf:
+  regionID: 1
+  setID: 1
+  pointerToSetID: 0
+  supportedTACs: [1, 2, 3, 4]  # Tracking Area Codes
+  plmnSupportList:
+    - mcc: "208"
+      mnc: "93"

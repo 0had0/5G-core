@@ -1,0 +1,47 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  tls:
+    enabled: false
+
+logging:
+  level: "info"
+
+metrics:
+  enabled: true
+  port: 9090
+
+networkFunction:
+  type: "PCF"
+  instanceID: "pcf-001"
+  instanceName: "PCF Policy Controller"
+  capacity: 100
+  priority: 1
+  locality: "local"
+
+nrf:
+  url: "http://nrf:8080"
+  registrationRetry: 5
+  heartbeatInterval: 30
+
+pcf:
+  defaultPolicies:
+    - name: "default-qos"
+      qosLevel: 5
+      maxBitrateDL: 20000000  # 20 Mbps
+      maxBitrateUL: 10000000  # 10 Mbps
+      guaranteedBitrateDL: 5000000  # 5 Mbps
+      guaranteedBitrateUL: 2000000  # 2 Mbps
+    - name: "premium-qos"
+      qosLevel: 1
+      maxBitrateDL: 100000000  # 100 Mbps
+      maxBitrateUL: 50000000  # 50 Mbps
+      guaranteedBitrateDL: 50000000  # 50 Mbps
+      guaranteedBitrateUL: 25000000  # 25 Mbps
+  slicePolicies:
+    - sst: 1  # eMBB
+      sd: "010203"
+      defaultPolicy: "default-qos"
+    - sst: 2  # URLLC
+      sd: "040506"
+      defaultPolicy: "premium-qos"

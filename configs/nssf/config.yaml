@@ -1,0 +1,55 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  tls:
+    enabled: false
+
+logging:
+  level: "info"
+
+metrics:
+  enabled: true
+  port: 9090
+
+networkFunction:
+  type: "NSSF"
+  instanceID: "nssf-001"
+  instanceName: "NSSF Slice Selector"
+  capacity: 100
+  priority: 1
+  locality: "local"
+
+nrf:
+  url: "http://nrf:8080"
+  registrationRetry: 5
+  heartbeatInterval: 30
+
+nssf:
+  sliceConfigurations:
+    - sst: 1  # eMBB (Enhanced Mobile Broadband)
+      sd: "010203"
+      nsiList:
+        - "nsi-embb-1"
+        - "nsi-embb-2"
+      validPlmns:
+        - mcc: "208"
+          mnc: "93"
+        - mcc: "310"
+          mnc: "170"
+    - sst: 2  # URLLC (Ultra-Reliable Low Latency Communications)
+      sd: "040506"
+      nsiList:
+        - "nsi-urllc-1"
+      validPlmns:
+        - mcc: "208"
+          mnc: "93"
+    - sst: 3  # mMTC (Massive Machine Type Communications)
+      sd: "070809"
+      nsiList:
+        - "nsi-mmtc-1"
+      validPlmns:
+        - mcc: "208"
+          mnc: "93"
+  defaultSlice:
+    sst: 1
+    sd: "010203"
